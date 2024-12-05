@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MayorTech | Registration</title>
+  <link rel="stylesheet" href="./bootstrap.css">
+</head>
+<body>
+  <section class="container">
+    <div class="row">
+        <div class="col d-none d-lg-block d-sm-none d-md-none"></div>
+        <div class="col py-2 border-3 shadow mt-5">
+            <h1 class="text-center py-2">Account Sign up</h1>
+            <div>
+                <div class="input-group flex-nowrap my-3">
+                    <span class="input-group-text" id="addon-wrapping">First Name</span>
+                    <input id="firstName" type="text" class="form-control" placeholder="First name" aria-label="firstName" aria-describedby="addon-wrapping">
+                </div>
+                <div class="input-group flex-nowrap my-3">
+                    <span class="input-group-text" id="addon-wrapping">Last Name</span>
+                    <input id="lastName" type="text" class="form-control" placeholder="Last name" aria-label="lastName" aria-describedby="addon-wrapping">
+                </div>
+                <div class="input-group flex-nowrap my-3">
+                    <span class="input-group-text" id="addon-wrapping"><img src="./img/email.svg" width="25" alt=""></span>
+                    <input id="email" type="email" class="form-control" placeholder="Email" aria-label="email" aria-describedby="addon-wrapping">
+                </div>
+                <div class="input-group flex-nowrap my-3">
+                    <span class="input-group-text" id="addon-wrapping"><img src="./img/password.svg" width="25" alt=""></span>
+                    <input id="password" type="password" class="form-control" placeholder="Password" aria-label="password" aria-describedby="addon-wrapping">
+                </div>
+                <div class="mb-3 flex-nowrap">
+                    
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-1 rounded-pill btn-primary w-100 fw-bold py-2" id="btnSubmit">Sign Up</button>
+                </div>
+                <div class="content__or-text text-center">
+                  <span></span>
+                  <span>OR</span>
+                  <span></span>
+              </div>
+              <div class="text-center my-4">
+                  <button type="button" id="signGithub" class=" btn btn-outline-primary rounded-pill btn-light w-100 fw-bold my-3 py-3">Sign in with Github</button>
+              </div>
+              <div class="text-center my-4">
+                <button type="button" id="signFacebook" class=" btn btn-outline-primary rounded-pill btn-light w-100 fw-bold my-3 py-3">Sign in with Facebook</button>
+            </div>
+            <div class="text-center my-4">
+              <button type="button" id="signTwitter" class=" btn btn-outline-primary rounded-pill btn-light w-100 fw-bold my-3 py-3">Sign in with Twitter</button>
+            </div>
+                <div class="text-center text-dark anchor">
+                    <p>Already have an account? <a href="./signin.html" class="text-dark a-1">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="col d-none d-lg-block d-sm-none d-md-none"></div>
+    </div>
+  </section>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCb_bHHJAGXvyKpKvYf8sByWzY1kpcmkVM",
+      authDomain: "project-different-sign-in.firebaseapp.com",
+      projectId: "project-different-sign-in",
+      databaseURL: "https://project-different-sign-in-default-rtdb.firebaseio.com",
+      storageBucket: "project-different-sign-in.firebasestorage.app",
+      messagingSenderId: "887197616932",
+      appId: "1:887197616932:web:3bb0fb69628c53a342c1b1",
+      measurementId: "G-8PRW0X3JWX"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GithubAuthProvider();
+    const btnSubmit = document.getElementById('btnSubmit');
+    const signGithub = document.getElementById("signGithub")
+    btnSubmit.addEventListener('click', ()=>{
+      const fName = document.getElementById('firstName')
+      const lName = document.getElementById('lastName')
+      const mail = document.getElementById('email')
+      const pass = document.getElementById('password')
+            if (fName.value === '' || lName.value === '' || mail.value === '' || pass.value === '') {
+                alert("empty")
+            } else {
+                const user = {
+                    fname: fName.value,
+                    lname: lName.value,
+                    maily: mail.value,
+                    passy: pass.value
+                }
+                const { maily, passy } = user
+                // console.log(maily, passy);
+                // console.log(user);
+                localStorage.setItem('userInfo', JSON.stringify(user))
+                createUserWithEmailAndPassword(auth, maily, passy)
+                .then((credential)=>{
+                    console.log(credential);
+                    setTimeout(()=>{
+                      window.location.href = 'signin.html'
+                    },  2400)
+                })
+                .catch((error)=>{
+                    console.log(error.code);
+                    if(error.code === 'auth/invalid-email') {
+                        alert('Invalid email address')
+                    }
+                    if(error.code === 'auth/password-does-not-meet-requirements') {
+                        alert('password requirement not met')
+                    }
+                    if(error.code === 'auth/email-already-in-use') {
+                        alert('email already in use')
+                    }
+                })
+            }
+    })
+    signGithub.addEventListener('click', ()=>{
+      //alert("working")
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+          const credential = GithubAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+        
+          // The signed-in user info.
+          const user = result.user;
+          // IdP data available using getAdditionalUserInfo(result)
+          // ...
+          setTimeout(()=>{
+            window.location.href = 'dashboard.html'
+          },  2400)
+      }).catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.customData.email;
+          // The AuthCredential type that was used.
+          const credential = GithubAuthProvider.credentialFromError(error);
+          // ...
+      });
+    })
+  </script>
+
+  <script src="./bootstrap.js"></script>
+</body>
+</html>
